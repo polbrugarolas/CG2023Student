@@ -2,6 +2,7 @@
 #include "mesh.h"
 #include "shader.h"
 #include "utils.h" 
+#include "entity.h"
 
 Application::Application(const char* caption, int width, int height)
 {
@@ -27,12 +28,21 @@ Application::~Application()
 void Application::Init(void)
 {
 	std::cout << "Initiating app..." << std::endl;
+	Mesh* mesh = new Mesh();
+	mesh->LoadOBJ("meshes/lee.obj");
+	entity = new Entity(mesh);
+	cam = new Camera();
+	cam->eye.Set(0, 0, -2);
+	cam->center.Set(0, 0, 0);
+	cam->up.Set(0, 1, 0);
+
+	
 }
 
 // Render one frame
 void Application::Render(void)
 {
-	// ...
+	entity->Render(&framebuffer, cam, Color(255, 255, 255));
 
 	framebuffer.Render();
 }
@@ -69,13 +79,6 @@ void Application::OnMouseButtonUp( SDL_MouseButtonEvent event )
 void Application::OnMouseMove(SDL_MouseButtonEvent event)
 {
 	
-}
-
-void Application::OnWheel(SDL_MouseWheelEvent event)
-{
-	float dy = event.preciseY;
-
-	// ...
 }
 
 void Application::OnFileChanged(const char* filename)

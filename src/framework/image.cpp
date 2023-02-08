@@ -334,6 +334,34 @@ void ForEachPixel(Image& img, const Image& img2, F f) {
 
 #endif
 
+//***********OUR FUNCTIONS*****************
+//***********OUR FUNCTIONS*****************
+//***********OUR FUNCTIONS*****************
+//***********OUR FUNCTIONS*****************
+void Image::DrawLineBresenham(int x0, int y0, int x1, int y1, const Color& c) {
+	int x = abs(x1 - x0);
+	int y = abs(y1 - y0);
+	int dirx, diry;
+	if (x0 < x1) { dirx = 1; }
+	else { dirx = -1; }
+	if (y0 < y1) { diry = 1; }
+	else { diry = -1; }
+	int d = x - y;
+
+	while (!(x0 == x1) && !(y0 == y1)) {
+		SetPixelSafe(x0, y0, c);
+		int d2 = 2 * d;
+		if (d2 < x) {
+			d = d + x;
+			y0 = y0 + diry;
+		}
+		if (d2 > -y) {
+			d = d - y;
+			x0 = x0 + dirx;
+		}
+	}
+}
+
 FloatImage::FloatImage(unsigned int width, unsigned int height)
 {
 	this->width = width;

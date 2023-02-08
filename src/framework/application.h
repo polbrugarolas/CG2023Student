@@ -7,10 +7,15 @@
 #include "main/includes.h"
 #include "framework.h"
 #include "image.h"
+#include "mesh.h"
 
 class Application
 {
 public:
+
+	Mesh* mesh;
+	Entity* entity;
+	Camera* cam;
 
 	// Window
 
@@ -30,7 +35,6 @@ public:
 	void OnMouseButtonDown(SDL_MouseButtonEvent event);
 	void OnMouseButtonUp(SDL_MouseButtonEvent event);
 	void OnMouseMove(SDL_MouseButtonEvent event);
-	void OnWheel(SDL_MouseWheelEvent event);
 	void OnFileChanged(const char* filename);
 
 	// CPU Global framebuffer
