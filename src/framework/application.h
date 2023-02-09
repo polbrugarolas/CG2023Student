@@ -13,8 +13,10 @@ class Application
 {
 public:
 
-	Mesh* mesh;
-	Entity* entity;
+	Mesh* mesh1;
+	Mesh* mesh2;
+	Entity* entity1;
+	Entity* entity2;
 	Camera* cam;
 
 	// Window
@@ -24,8 +26,10 @@ public:
 	int window_height;
 
 	float time;
+	float total_t;
 
 	// Input
+	int option;
 	const Uint8* keystate;
 	int mouse_state; // Tells which buttons are pressed
 	Vector2 mouse_position; // Last mouse position
