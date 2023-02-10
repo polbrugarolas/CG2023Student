@@ -27,6 +27,12 @@ public:
 
 	float time;
 	float total_t;
+	bool dragging;
+	int mouse_x;
+	int mouse_y;
+	int mouse_z;
+	bool mouse_drag;
+	Vector2 prev_mouse;
 
 	// Input
 	int option;

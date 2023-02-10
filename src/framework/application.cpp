@@ -20,6 +20,13 @@ Application::Application(const char* caption, int width, int height)
 	this->framebuffer.Resize(w, h);
 	this->option = 1;
 	this->total_t = 0;
+	this->dragging = false;
+	this->mouse_x = 0;
+	this->mouse_y = 0;
+	this->mouse_z = 0;
+	this->mouse_drag = false;
+	this->prev_mouse = Vector2(0, 0);
+
 }
 
 Application::~Application()
@@ -57,7 +64,11 @@ void Application::Render(void)
 	if (option == 2){
 		entity1->Render(&framebuffer, cam, Color(255, 255, 255));
 		entity2->Render(&framebuffer, cam, Color(255, 0, 0));
-	}	
+	}
+	if (option == 3) {
+		entity1->Render(&framebuffer, cam, Color(255, 255, 255));
+		entity2->Render(&framebuffer, cam, Color(255, 0, 0));
+	}
 
 	framebuffer.Render();
 	framebuffer.Fill(Color::BLACK);
@@ -72,6 +83,21 @@ void Application::Update(float seconds_elapsed)
 		entity2->matrix_e = Matrix44();
 		entity2->matrix_e.Translate(-0.5 * cos(0.5 * total_t), 0, 0.5 * sin(0.5 * total_t));
 	}
+	if (option == 3) {
+		
+		// update entity2 based on mouse movement
+		int x, y;
+		SDL_GetMouseState(&x, &y);
+		float t = (float)x / (float)window_width;
+		entity2->matrix_e = Matrix44();
+		entity2->matrix_e.Translate(-1.0 + 2.0 * t, 0, 0);
+		
+		float center_x = (x / float(window_width)) * 2 - 1;
+		float center_y = -(y / float(window_height)) * 2 + 1;
+		cam->center.Set(center_x, center_y, 0);
+		cam->LookAt(cam->eye, cam->center, cam->up);
+	
+	}
 
 }
 
@@ -83,25 +109,37 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 		case SDLK_ESCAPE: exit(0); break; // ESC key, kill the app
 		case SDLK_1: option = 1; cam->eye.Set(0, 0, 2); cam->LookAt(cam->eye, cam->center, cam->up); break;
 		case SDLK_2: option = 2; cam->eye.Set(0, 2, 2); cam->LookAt(cam->eye, cam->center, cam->up); break;
+		case SDLK_3: option = 3; cam->eye.Set(0, 2, 2); cam->LookAt(cam->eye, cam->center, cam->up); break;
 	}
 }
 
 void Application::OnMouseButtonDown( SDL_MouseButtonEvent event )
 {
 	if (event.button == SDL_BUTTON_LEFT) {
-
+		if (option == 3) {
+			dragging = true;
+		}
 	}
 }
 
 void Application::OnMouseButtonUp( SDL_MouseButtonEvent event )
 {
 	if (event.button == SDL_BUTTON_LEFT) {
-
+		if (option == 3) {
+			dragging = false;
+		}
 	}
 }
 
 void Application::OnMouseMove(SDL_MouseButtonEvent event)
 {
+	if (dragging && option == 3) {
+		int x, y;
+		SDL_GetMouseState(&x, &y);
+		float t = (float)x / (float)window_width;
+		entity2->matrix_e = Matrix44();
+		entity2->matrix_e.Translate(-1.0 + 2.0 * t, 0, 0);
+	}
 	
 }
 
