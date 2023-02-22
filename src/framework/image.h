@@ -95,10 +95,23 @@ public:
 	}
 	#endif
 
-	//*******OUR FUNCTIONS*********
-	void DrawLineBresenham(int x0, int y0, int x1, int y1, const Color& c);
 
+	//*************OUR FUNCTIONS*********
+	//*************OUR FUNCTIONS*********
+	//*************OUR FUNCTIONS*********
+	//*************OUR FUNCTIONS*********
+	typedef struct cell {
+		int maxx;
+		int minx;
+	} cell;
+	void Swap_V2(Vector2& p0, Vector2& p1);
+	void DrawLineBresenham(int x0, int y0, int x1, int y1, const Color& c);
+	void DrawTriangle(const Vector2& v0, const Vector2& v1, const Vector2& v2, const Color& color);
+	void ScanLineBresenham(int x0, int y0, int x1, int y1, std::vector<cell>& table);
+
+	
 };
+
 
 // Image storing one float per pixel instead of a 3 or 4 component Color
 

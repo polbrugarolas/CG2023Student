@@ -21,6 +21,7 @@ public:
 	Entity(Mesh* msh);
 	Entity(Matrix44 mtx, Mesh* msh);
 	void Render(Image* framebuffer, Camera* camera, const Color& c);
+	void Render_raster(Image* framebuffer, Camera* camera, const Color& c);
 };
 
 

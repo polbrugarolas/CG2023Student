@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+#include <utility>
 #include "GL/glew.h"
 #include "../extra/picopng.h"
 #include "image.h"
@@ -360,6 +361,76 @@ void Image::DrawLineBresenham(int x0, int y0, int x1, int y1, const Color& c) {
 			x0 = x0 + dirx;
 		}
 	}
+}
+void Image::Swap_V2(Vector2& p0, Vector2& p1) {
+	Vector2 altr = p0;
+	p0 = p1;
+	p1 = altr; 
+}
+	
+
+void Image::DrawTriangle(const Vector2& v0, const Vector2& v1, const Vector2& v2, const Color& color) {
+	Vector2 p0 = v0;
+	Vector2 p1 = v1;
+	Vector2 p2 = v2;
+	// Sort vertices by y
+	if (p1.y < p0.y) std::swap(p0, p1);
+	if (p2.y < p1.y) std::swap(p1, p2);
+	if (p1.y < p0.y) std::swap(p0, p1);
+
+	//Initialize aet
+	std::vector<cell> aet;
+	aet.resize(this->height);
+	for (size_t i = 0; i < this->height; i++){
+		aet[i].maxx = INT_MIN;
+		aet[i].minx = INT_MAX;
+	}
+	
+	ScanLineBresenham(p0.x, p0.y, p1.x, p1.y, aet);
+	ScanLineBresenham(p0.x, p0.y, p2.x, p2.y, aet);
+	ScanLineBresenham(p1.x, p1.y, p2.x, p2.y, aet);
+	
+	for (size_t i = 0; i < this->height; i++) {
+		if (aet[i].maxx != INT_MIN || aet[i].minx != INT_MIN) {
+			for (size_t j = aet[i].minx; j <= aet[i].maxx; j++){
+				SetPixelSafe(j, i, color);
+			}
+		}
+	}
+	
+
+}
+
+
+void Image::ScanLineBresenham(int x0, int y0, int x1, int y1, std::vector<cell>& table) {
+	int x = abs(x1 - x0);
+	int y = abs(y1 - y0);
+	int dirx, diry;
+	if (x0 < x1) { dirx = 1; }
+	else { dirx = -1; }
+	if (y0 < y1) { diry = 1; }
+	else { diry = -1; }
+	int d = x - y;
+
+	while (!(x0 == x1) && !(y0 == y1)) {
+		if (table[y0].maxx < x0) {
+			table[y0].maxx = x0;
+		}
+		if (table[y0].minx > x0) {
+			table[y0].minx = x0;
+		}
+		int d2 = 2 * d;
+		if (d2 < x) {
+			d = d + x;
+			y0 = y0 + diry;
+		}
+		
+		if (d2 > -y) {
+			d = d - y;
+			x0 = x0 + dirx;
+		}
+	}
+
 }
 
 FloatImage::FloatImage(unsigned int width, unsigned int height)

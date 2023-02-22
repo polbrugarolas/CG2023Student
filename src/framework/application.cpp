@@ -58,7 +58,7 @@ void Application::Init(void)
 void Application::Render(void)
 {
 	if (option == 1) {
-		entity1->Render(&framebuffer, cam, Color(255, 255, 255));
+		entity1->Render_raster(&framebuffer, cam, Color(255, 255, 255));
 		entity2->Render(&framebuffer, cam, Color(255, 0, 0));
 	}
 	if (option == 2){
