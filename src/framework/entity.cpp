@@ -20,7 +20,8 @@ Entity::Entity(Matrix44 mtx, Mesh* msh) {
 
 //FUNCTIONS
 void Entity::Render(Image* framebuffer, Camera* camera, const Color& c) {
-	int size = mesh_e.vertices.size();
+	const std::vector<Vector3>& vertices = mesh_e.GetVertices();
+	int size = vertices.size();
 	Vector3 v[3];
 	bool negZ[3];
 
@@ -28,7 +29,7 @@ void Entity::Render(Image* framebuffer, Camera* camera, const Color& c) {
 	{
 		for (int j = 0; j < 3; j++)
 		{
-			v[j] = mesh_e.vertices[i];
+			v[j] = vertices[i];
 			i++;
 			v[j] = matrix_e * v[j];
 			v[j] = camera->ProjectVector(v[j], negZ[j]);
@@ -47,7 +48,8 @@ void Entity::Render(Image* framebuffer, Camera* camera, const Color& c) {
 }
 
 void Entity::Render_raster(Image* framebuffer, Camera* camera, const Color& c) {
-	int size = mesh_e.vertices.size();
+	const std::vector<Vector3>& vertices = mesh_e.GetVertices();
+	int size = vertices.size();
 	Vector3 v[3];
 	bool negZ[3];
 
@@ -55,7 +57,7 @@ void Entity::Render_raster(Image* framebuffer, Camera* camera, const Color& c) {
 	{
 		for (int j = 0; j < 3; j++)
 		{
-			v[j] = mesh_e.vertices[i];
+			v[j] = vertices[i];
 			i++;
 			v[j] = matrix_e * v[j];
 			v[j] = camera->ProjectVector(v[j], negZ[j]);
