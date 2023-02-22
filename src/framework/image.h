@@ -104,9 +104,9 @@ public:
 		int maxx;
 		int minx;
 	} cell;
-	void Swap_V2(Vector2& p0, Vector2& p1);
+
 	void DrawLineBresenham(int x0, int y0, int x1, int y1, const Color& c);
-	void DrawTriangle(const Vector2& v0, const Vector2& v1, const Vector2& v2, const Color& color);
+	void DrawTriangle(const Vector2& p0, const Vector2& p1, const Vector2& p2, const Color& color);
 	void ScanLineBresenham(int x0, int y0, int x1, int y1, std::vector<cell>& table);
 
 	

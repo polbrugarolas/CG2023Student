@@ -339,62 +339,119 @@ void ForEachPixel(Image& img, const Image& img2, F f) {
 //***********OUR FUNCTIONS*****************
 //***********OUR FUNCTIONS*****************
 //***********OUR FUNCTIONS*****************
-void Image::DrawLineBresenham(int x0, int y0, int x1, int y1, const Color& c) {
-	int x = abs(x1 - x0);
-	int y = abs(y1 - y0);
-	int dirx, diry;
-	if (x0 < x1) { dirx = 1; }
-	else { dirx = -1; }
-	if (y0 < y1) { diry = 1; }
-	else { diry = -1; }
-	int d = x - y;
+void Image::DrawLineBresenham(int x0, int y0, int x1, int y1, const Color& c)
+{
+	// 4th and 5th octants
+	if (x1 < x0) {
+		int t = x1;
+		x1 = x0;
+		x0 = t;
 
-	while (!(x0 == x1) && !(y0 == y1)) {
-		SetPixelSafe(x0, y0, c);
-		int d2 = 2 * d;
-		if (d2 < x) {
-			d = d + x;
-			y0 = y0 + diry;
+		t = y1;
+		y1 = y0;
+		y0 = t;
+	}
+
+	int dx, dy, iE, iNE, d, x, y;
+
+	dx = x1 - x0;
+	dy = y1 - y0;
+
+	// 8th octant
+	if (y0 > y1)
+		dy = -dy;
+
+	iE = 2 * dy;
+	iNE = 2 * (dy - dx);
+	d = 2 * dy - dx;
+	x = x0;
+	y = y0;
+
+	SetPixelSafe(x, y, c);
+
+	if (dx > dy) {
+
+		while (x < x1) {
+
+			if (d <= 0) {
+				d += iE;
+				x += 1;
+			}
+			else {
+				d += iNE;
+				x += 1;
+				if (y0 > y1) // 8th octant
+					y -= 1;
+				else
+					y += 1;
+			}
+
+			SetPixelSafe(x, y, c);
+
 		}
-		if (d2 > -y) {
-			d = d - y;
-			x0 = x0 + dirx;
+	}
+	// 2nd and 6th octants
+	else {
+
+		iE = 2 * dx;
+		iNE = 2 * (dx - dy);
+		d = 2 * dx - dy;
+
+		// 3rd and 7th octants
+		if (y1 < y0) {
+			int t = x1;
+			x1 = x0;
+			x0 = t;
+
+			t = y1;
+			y1 = y0;
+			y0 = t;
+
+			x = x0;
+			y = y0;
+		}
+
+		while (y < y1) {
+
+			if (d <= 0) {
+				d += iE;
+				y += 1;
+			}
+			else {
+				d += iNE;
+				y += 1;
+				if (x0 > x1)
+					x -= 1;
+				else
+					x += 1;
+			}
+
+			SetPixelSafe(x, y, c);
 		}
 	}
 }
-void Image::Swap_V2(Vector2& p0, Vector2& p1) {
-	Vector2 altr = p0;
-	p0 = p1;
-	p1 = altr; 
-}
-	
 
-void Image::DrawTriangle(const Vector2& v0, const Vector2& v1, const Vector2& v2, const Color& color) {
-	Vector2 p0 = v0;
-	Vector2 p1 = v1;
-	Vector2 p2 = v2;
-	// Sort vertices by y
-	if (p1.y < p0.y) std::swap(p0, p1);
-	if (p2.y < p1.y) std::swap(p1, p2);
-	if (p1.y < p0.y) std::swap(p0, p1);
 
-	//Initialize aet
+
+void Image::DrawTriangle(const Vector2& p0, const Vector2& p1, const Vector2& p2, const Color& color) {
 	std::vector<cell> aet;
 	aet.resize(this->height);
-	for (size_t i = 0; i < this->height; i++){
+
+
+	for (int i = 0; i < this->height; i++){
 		aet[i].maxx = INT_MIN;
 		aet[i].minx = INT_MAX;
 	}
-	
+
+
 	ScanLineBresenham(p0.x, p0.y, p1.x, p1.y, aet);
 	ScanLineBresenham(p0.x, p0.y, p2.x, p2.y, aet);
 	ScanLineBresenham(p1.x, p1.y, p2.x, p2.y, aet);
 	
-	for (size_t i = 0; i < this->height; i++) {
-		if (aet[i].maxx != INT_MIN || aet[i].minx != INT_MIN) {
-			for (size_t j = aet[i].minx; j <= aet[i].maxx; j++){
-				SetPixelSafe(j, i, color);
-			}
+
+	for (int i = 0; i < this->height; i++) {
+		for (int j = aet[i].minx; j <= aet[i].maxx; j++){
+			SetPixelSafe(j, i, color);
 		}
 	}
 	
@@ -403,31 +460,107 @@ void Image::DrawTriangle(const Vector2& v0, const Vector2& v1, const Vector2& v2
 
 
 void Image::ScanLineBresenham(int x0, int y0, int x1, int y1, std::vector<cell>& table) {
-	int x = abs(x1 - x0);
-	int y = abs(y1 - y0);
-	int dirx, diry;
-	if (x0 < x1) { dirx = 1; }
-	else { dirx = -1; }
-	if (y0 < y1) { diry = 1; }
-	else { diry = -1; }
-	int d = x - y;
+	// 4th and 5th octants
+	if (x1 < x0) {
+		int t = x1;
+		x1 = x0;
+		x0 = t;
 
-	while (!(x0 == x1) && !(y0 == y1)) {
-		if (table[y0].maxx < x0) {
-			table[y0].maxx = x0;
+		t = y1;
+		y1 = y0;
+		y0 = t;
+	}
+
+	int dx, dy, iE, iNE, d, x, y;
+
+	dx = x1 - x0;
+	dy = y1 - y0;
+
+	// 8th octant
+	if (y0 > y1)
+		dy = -dy;
+
+	iE = 2 * dy;
+	iNE = 2 * (dy - dx);
+	d = 2 * dy - dx;
+	x = x0;
+	y = y0;
+
+	if (table[y].maxx < x) {
+		table[y].maxx = x;
+	}
+	if (table[y].minx > x) {
+		table[y].minx = x;
+	}
+
+	if (dx > dy) {
+
+		while (x < x1) {
+
+			if (d <= 0) {
+				d += iE;
+				x += 1;
+			}
+			else {
+				d += iNE;
+				x += 1;
+				if (y0 > y1) // 8th octant
+					y -= 1;
+				else
+					y += 1;
+			}
+
+			if (table[y].maxx < x) {
+				table[y].maxx = x;
+			}
+			if (table[y].minx > x) {
+				table[y].minx = x;
+			}
+
 		}
-		if (table[y0].minx > x0) {
-			table[y0].minx = x0;
+	}
+	// 2nd and 6th octants
+	else {
+
+		iE = 2 * dx;
+		iNE = 2 * (dx - dy);
+		d = 2 * dx - dy;
+
+		// 3rd and 7th octants
+		if (y1 < y0) {
+			int t = x1;
+			x1 = x0;
+			x0 = t;
+
+			t = y1;
+			y1 = y0;
+			y0 = t;
+
+			x = x0;
+			y = y0;
 		}
-		int d2 = 2 * d;
-		if (d2 < x) {
-			d = d + x;
-			y0 = y0 + diry;
-		}
-		
-		if (d2 > -y) {
-			d = d - y;
-			x0 = x0 + dirx;
+
+		while (y < y1) {
+
+			if (d <= 0) {
+				d += iE;
+				y += 1;
+			}
+			else {
+				d += iNE;
+				y += 1;
+				if (x0 > x1)
+					x -= 1;
+				else
+					x += 1;
+			}
+
+			if (table[y].maxx < x) {
+				table[y].maxx = x;
+			}
+			if (table[y].minx > x) {
+				table[y].minx = x;
+			}
 		}
 	}
 

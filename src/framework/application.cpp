@@ -18,7 +18,7 @@ Application::Application(const char* caption, int width, int height)
 	this->keystate = SDL_GetKeyboardState(nullptr);
 
 	this->framebuffer.Resize(w, h);
-	this->option = 1;
+	this->option = 0;
 	this->total_t = 0;
 	this->dragging = false;
 	this->mouse_x = 0;
@@ -69,6 +69,7 @@ void Application::Render(void)
 		entity1->Render(&framebuffer, cam, Color(255, 255, 255));
 		entity2->Render(&framebuffer, cam, Color(255, 0, 0));
 	}
+
 
 	framebuffer.Render();
 	framebuffer.Fill(Color::BLACK);
