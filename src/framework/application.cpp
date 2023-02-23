@@ -59,7 +59,12 @@ void Application::Init(void)
 void Application::Render(void)
 {
 	if (option == 1) {
-		entity1->Render_raster(&framebuffer, cam, Color(255, 255, 255));
+		if (RenderMode == 0) {
+			entity1->Render_raster(&framebuffer, cam, Color(255, 255, 255));
+		}
+		else {
+			entity1->Render_interpol(&framebuffer, cam);
+		}
 		entity2->Render(&framebuffer, cam, Color(255, 0, 0));
 	}
 	if (option == 2){
@@ -77,7 +82,6 @@ void Application::Render(void)
 		else {
 			entity1->Render_interpol(&framebuffer, cam);
 		}
-		
 	}
 
 
