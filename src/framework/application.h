@@ -35,6 +35,7 @@ public:
 	Vector2 prev_mouse;
 
 	// Input
+	int RenderMode;
 	int option;
 	const Uint8* keystate;
 	int mouse_state; // Tells which buttons are pressed

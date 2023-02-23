@@ -19,6 +19,7 @@ Application::Application(const char* caption, int width, int height)
 
 	this->framebuffer.Resize(w, h);
 	this->option = 0;
+	this->RenderMode = 0;
 	this->total_t = 0;
 	this->dragging = false;
 	this->mouse_x = 0;
@@ -69,6 +70,15 @@ void Application::Render(void)
 		entity1->Render(&framebuffer, cam, Color(255, 255, 255));
 		entity2->Render(&framebuffer, cam, Color(255, 0, 0));
 	}
+	if (option == 4) {
+		if (RenderMode == 0) {
+			entity1->Render_raster(&framebuffer, cam, Color(255, 255, 255));
+		}
+		else {
+			entity1->Render_interpol(&framebuffer, cam);
+		}
+		
+	}
 
 
 	framebuffer.Render();
@@ -111,6 +121,9 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 		case SDLK_1: option = 1; cam->eye.Set(0, 0, 2); cam->LookAt(cam->eye, cam->center, cam->up); break;
 		case SDLK_2: option = 2; cam->eye.Set(0, 2, 2); cam->LookAt(cam->eye, cam->center, cam->up); break;
 		case SDLK_3: option = 3; cam->eye.Set(0, 2, 2); cam->LookAt(cam->eye, cam->center, cam->up); break;
+		case SDLK_4: option = 4; cam->eye.Set(1, 1, 1.5); cam->LookAt(cam->eye, cam->center, cam->up); break;
+		case SDLK_c: if (RenderMode == 0) { RenderMode = 1; }
+				   else { RenderMode = 0; } break;
 	}
 }
 

@@ -107,6 +107,7 @@ public:
 
 	void DrawLineBresenham(int x0, int y0, int x1, int y1, const Color& c);
 	void DrawTriangle(const Vector2& p0, const Vector2& p1, const Vector2& p2, const Color& color);
+	void DrawTriangleInterpolated(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Color& c0, const Color& c1, const Color& c2);
 	void ScanLineBresenham(int x0, int y0, int x1, int y1, std::vector<cell>& table);
 
 	
