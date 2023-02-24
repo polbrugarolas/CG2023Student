@@ -20,6 +20,7 @@ Application::Application(const char* caption, int width, int height)
 	this->framebuffer.Resize(w, h);
 	this->option = 0;
 	this->RenderMode = 0;
+	this->Occlu = 0;
 	this->total_t = 0;
 	this->dragging = false;
 	this->mouse_x = 0;
@@ -52,6 +53,10 @@ void Application::Init(void)
 	cam->up.Set(0, 1, 0);
 	cam->LookAt(cam->eye, cam->center, cam->up);
 	cam->SetPerspective(45, float(framebuffer.width / framebuffer.height), 0.01, 100);
+
+	zbuffer = new FloatImage(framebuffer.width, framebuffer.height);
+	zbuffer->Fill(INT_MAX);
+
 	
 }
 
@@ -80,7 +85,12 @@ void Application::Render(void)
 			entity1->Render_raster(&framebuffer, cam, Color(255, 255, 255));
 		}
 		else {
-			entity1->Render_interpol(&framebuffer, cam);
+			if (Occlu == 0) {
+				entity1->Render_interpol(&framebuffer, cam);
+			}
+			else {
+				entity1->Render_occlu(&framebuffer, cam,zbuffer);
+			}
 		}
 	}
 
@@ -128,6 +138,8 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 		case SDLK_4: option = 4; cam->eye.Set(1, 1, 1.5); cam->LookAt(cam->eye, cam->center, cam->up); break;
 		case SDLK_c: if (RenderMode == 0) { RenderMode = 1; }
 				   else { RenderMode = 0; } break;
+		case SDLK_z: if (Occlu == 0) { Occlu = 1; }
+				   else { Occlu = 0; } break;
 	}
 }
 

@@ -609,7 +609,60 @@ void Image::ScanLineBresenham(int x0, int y0, int x1, int y1, std::vector<cell>&
 			}
 		}
 	}
+}
 
+void Image::DrawTriangleInterpolated_occlu(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Color& c0, const Color& c1, const Color& c2, FloatImage* zbuffer) {
+	std::vector<cell> aet;
+	aet.resize(this->height);
+	float z_dist;
+
+
+	for (int i = 0; i < this->height; i++) {
+		aet[i].maxx = INT_MIN;
+		aet[i].minx = INT_MAX;
+	}
+
+
+	ScanLineBresenham(p0.x, p0.y, p1.x, p1.y, aet);
+	ScanLineBresenham(p0.x, p0.y, p2.x, p2.y, aet);
+	ScanLineBresenham(p1.x, p1.y, p2.x, p2.y, aet);
+
+
+	for (int i = 0; i < this->height; i++) {
+		for (int j = aet[i].minx; j <= aet[i].maxx; j++) {
+
+			Vector2 v0 = Vector2(p1.x - p0.x, p1.y - p0.y);
+			Vector2 v1 = Vector2(p2.x - p0.x, p2.y - p0.y);
+			Vector2 v2 = Vector2(j - p0.x, i - p0.y);
+
+			float d00 = v0.Dot(v0);
+			float d01 = v0.Dot(v1);
+			float d11 = v1.Dot(v1);
+			float d20 = v2.Dot(v0);
+			float d21 = v2.Dot(v1);
+			float denom = d00 * d11 - d01 * d01;
+			float v = (d11 * d20 - d01 * d21) / denom;
+			float w = (d00 * d21 - d01 * d20) / denom;
+			float u = 1.0 - v - w;
+
+			// Check that weights are in range [0..1] and add up to 1
+			if (v < 0 || w < 0 || u < 0 || v+w+u > 1) {
+				continue;
+			}
+
+			// Compute final color for current pixel using barycentric interpolation
+			Color finalColor = Color(c0.r * u + c1.r * v + c2.r * w, c0.g * u + c1.g * v + c2.g * w, c0.b * u + c1.b * v + c2.b * w);
+
+			z_dist = p0.z * u + p1.z * v + p2.z * w;
+
+			// Set the pixel color
+			SetPixelSafe(j, i, finalColor);
+			if (z_dist <= zbuffer->GetPixel(j, i)) {
+				SetPixelSafe(j, i, finalColor);
+				zbuffer->SetPixel(j, i, z_dist);
+			}
+		}
+	}
 }
 
 FloatImage::FloatImage(unsigned int width, unsigned int height)

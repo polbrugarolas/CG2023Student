@@ -13,6 +13,7 @@ class Application
 {
 public:
 
+	FloatImage* zbuffer;
 	Mesh* mesh1;
 	Mesh* mesh2;
 	Entity* entity1;
@@ -36,6 +37,7 @@ public:
 
 	// Input
 	int RenderMode;
+	int Occlu;
 	int option;
 	const Uint8* keystate;
 	int mouse_state; // Tells which buttons are pressed

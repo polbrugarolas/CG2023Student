@@ -23,6 +23,7 @@ public:
 	void Render(Image* framebuffer, Camera* camera, const Color& c);
 	void Render_raster(Image* framebuffer, Camera* camera, const Color& c);
 	void Render_interpol(Image* framebuffer, Camera* camera);
+	void Render_occlu(Image* framebuffer, Camera* camera, FloatImage* zBuffer);
 };
 
 
