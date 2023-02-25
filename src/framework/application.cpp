@@ -4,6 +4,10 @@
 #include "utils.h" 
 #include "entity.h"
 
+Mesh* quad;
+Shader* shader;
+float my_customtime;
+
 Application::Application(const char* caption, int width, int height)
 {
 	this->window = createWindow(caption, width, height);
@@ -28,6 +32,7 @@ Application::Application(const char* caption, int width, int height)
 	this->mouse_z = 0;
 	this->mouse_drag = false;
 	this->prev_mouse = Vector2(0, 0);
+
 
 }
 
@@ -56,13 +61,17 @@ void Application::Init(void)
 	zbuffer = new FloatImage(framebuffer.width, framebuffer.height);
 	zbuffer->Fill(INT_MAX);
 
+	quad = new Mesh();
+	quad->CreateQuad();
+	shader = Shader::Get("shaders/quad.vs", "shaders/quad.fs");
+	float my_customtime = 0;
 	
 }
 
 // Render one frame
 void Application::Render(void)
 {
-	if (option == 1) {
+	/*if (option == 1) {
 		if (RenderMode == 0) {
 			entity1->Render_raster(&framebuffer, cam, Color(255, 255, 255));
 		}
@@ -96,32 +105,20 @@ void Application::Render(void)
 
 	framebuffer.Render();
 	framebuffer.Fill(Color::BLACK);
-
+	*/
+	shader->Enable();
+	
+	shader->SetUniform1("option", option);
+	shader->SetFloat("u_time2", time - my_customtime);
+	shader->SetFloat("u_timeinf", time);
+	
+	quad->Render();
+	shader->Disable();
 }
 
 // Called after render
 void Application::Update(float seconds_elapsed)
 {
-	if (option == 2) {
-		total_t = total_t + seconds_elapsed;
-		entity2->matrix_e = Matrix44();
-		entity2->matrix_e.Translate(-0.5 * cos(0.5 * total_t), 0, 0.5 * sin(0.5 * total_t));
-	}
-	if (option == 3) {
-		
-		// update entity2 based on mouse movement
-		int x, y;
-		SDL_GetMouseState(&x, &y);
-		float t = (float)x / (float)window_width;
-		entity2->matrix_e = Matrix44();
-		entity2->matrix_e.Translate(-1.0 + 2.0 * t, 0, 0);
-		
-		float center_x = (x / float(window_width)) * 2 - 1;
-		float center_y = -(y / float(window_height)) * 2 + 1;
-		cam->center.Set(center_x, center_y, 0);
-		cam->LookAt(cam->eye, cam->center, cam->up);
-	
-	}
 
 }
 
@@ -131,14 +128,8 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 	// KEY CODES: https://wiki.libsdl.org/SDL2/SDL_Keycode
 	switch(event.keysym.sym) {
 		case SDLK_ESCAPE: exit(0); break; // ESC key, kill the app
-		case SDLK_1: option = 1; cam->eye.Set(0, 0, 2); cam->LookAt(cam->eye, cam->center, cam->up); break;
-		case SDLK_2: option = 2; cam->eye.Set(0, 2, 2); cam->LookAt(cam->eye, cam->center, cam->up); break;
-		case SDLK_3: option = 3; cam->eye.Set(0, 2, 2); cam->LookAt(cam->eye, cam->center, cam->up); break;
-		case SDLK_4: option = 4; cam->eye.Set(1, 1, 1.5); cam->LookAt(cam->eye, cam->center, cam->up); break;
-		case SDLK_c: if (RenderMode == 0) { RenderMode = 1; }
-				   else { RenderMode = 0; } break;
-		case SDLK_z: if (Occlu == 0) { Occlu = 1; }
-				   else { Occlu = 0; } break;
+		case SDLK_0: option = 0; my_customtime = time; break;
+		case SDLK_1: option = 1; my_customtime = time; break;
 	}
 }
 
