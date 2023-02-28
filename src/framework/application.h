@@ -38,6 +38,7 @@ public:
 	// Input
 	int RenderMode;
 	int Occlu;
+	int exercice;
 	int option;
 	const Uint8* keystate;
 	int mouse_state; // Tells which buttons are pressed

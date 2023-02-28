@@ -64,7 +64,7 @@ void Application::Init(void)
 	quad = new Mesh();
 	quad->CreateQuad();
 	shader = Shader::Get("shaders/quad.vs", "shaders/quad.fs");
-	float my_customtime = 0;
+	my_customtime = 0;
 	
 }
 
@@ -106,6 +106,7 @@ void Application::Render(void)
 	framebuffer.Render();
 	framebuffer.Fill(Color::BLACK);
 	*/
+
 	shader->Enable();
 	
 	shader->SetUniform1("option", option);
@@ -130,6 +131,7 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 		case SDLK_ESCAPE: exit(0); break; // ESC key, kill the app
 		case SDLK_0: option = 0; my_customtime = time; break;
 		case SDLK_1: option = 1; my_customtime = time; break;
+		case SDLK_2: option = 2; my_customtime = time; break;
 	}
 }
 
