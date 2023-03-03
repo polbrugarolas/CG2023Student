@@ -7,6 +7,8 @@
 Mesh* quad;
 Shader* shader;
 float my_customtime;
+Shader* shader_texture;
+Texture* fruits;
 
 Application::Application(const char* caption, int width, int height)
 {
@@ -22,7 +24,8 @@ Application::Application(const char* caption, int width, int height)
 	this->keystate = SDL_GetKeyboardState(nullptr);
 
 	this->framebuffer.Resize(w, h);
-	this->option = 0;
+	this->option = -1;
+	this->exercice = 0;
 	this->RenderMode = 0;
 	this->Occlu = 0;
 	this->total_t = 0;
@@ -64,57 +67,36 @@ void Application::Init(void)
 	quad = new Mesh();
 	quad->CreateQuad();
 	shader = Shader::Get("shaders/quad.vs", "shaders/quad.fs");
+	shader_texture = Shader::Get("shaders/quad.vs", "shaders/quad_texture.fs");
 	my_customtime = 0;
-	
+	fruits = new Texture;
+	fruits->Load("images/fruits.png");
 }
 
 // Render one frame
 void Application::Render(void)
 {
-	/*if (option == 1) {
-		if (RenderMode == 0) {
-			entity1->Render_raster(&framebuffer, cam, Color(255, 255, 255));
-		}
-		else {
-			entity1->Render_interpol(&framebuffer, cam);
-		}
-		entity2->Render(&framebuffer, cam, Color(255, 0, 0));
-	}
-	if (option == 2){
-		entity1->Render(&framebuffer, cam, Color(255, 255, 255));
-		entity2->Render(&framebuffer, cam, Color(255, 0, 0));
-	}
-	if (option == 3) {
-		entity1->Render(&framebuffer, cam, Color(255, 255, 255));
-		entity2->Render(&framebuffer, cam, Color(255, 0, 0));
-	}
-	if (option == 4) {
-		if (RenderMode == 0) {
-			entity1->Render_raster(&framebuffer, cam, Color(255, 255, 255));
-		}
-		else {
-			if (Occlu == 0) {
-				entity1->Render_interpol(&framebuffer, cam);
-			}
-			else {
-				entity1->Render_occlu(&framebuffer, cam,zbuffer);
-			}
-		}
-	}
-
-
-	framebuffer.Render();
-	framebuffer.Fill(Color::BLACK);
-	*/
-
-	shader->Enable();
+	if(exercice == 1){
+		shader->Enable();
 	
-	shader->SetUniform1("option", option);
-	shader->SetFloat("u_time2", time - my_customtime);
-	shader->SetFloat("u_timeinf", time);
+		shader->SetUniform1("option", option);
+		shader->SetFloat("u_time2", time - my_customtime);
+		shader->SetFloat("u_timeinf", time);
 	
-	quad->Render();
-	shader->Disable();
+		quad->Render();
+		shader->Disable();
+	}
+	if(exercice == 2){
+		shader_texture->Enable();
+
+		shader_texture->SetUniform1("option", option);
+		shader_texture->SetFloat("u_time2", time - my_customtime);
+		shader_texture->SetFloat("u_timeinf", time);
+
+		quad->Render();
+		shader_texture->Disable();
+	}
+	
 }
 
 // Called after render
@@ -129,9 +111,9 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 	// KEY CODES: https://wiki.libsdl.org/SDL2/SDL_Keycode
 	switch(event.keysym.sym) {
 		case SDLK_ESCAPE: exit(0); break; // ESC key, kill the app
-		case SDLK_0: option = 0; my_customtime = time; break;
-		case SDLK_1: option = (option+1)%3; my_customtime = time; break;
-		case SDLK_2: option = 2; my_customtime = time; break;
+		case SDLK_0: exercice = 0; option = 0; break;
+		case SDLK_1: exercice = 1; option = (option + 1) % 5; my_customtime = time; break;
+		case SDLK_2: exercice = 2; option = (option + 1) % 4; my_customtime = time; break;
 	}
 }
 

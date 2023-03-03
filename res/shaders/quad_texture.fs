@@ -61,12 +61,7 @@ void main()
 
 	else if (option == 4) {
 		
-		//float dist_top = distance(v_uv, vec2(0.5, 1.0));
-		//float dist_bottom = distance(v_uv, vec2(0.5, 0.0));
-		//float max_dist = distance(vec2(0.0, 0.5), vec2(0.5, 1.0));
-		//float factor = dist_top / max_dist;
-
-		//final_color = mix(black, green, factor);
+		final_color = (0.0, smoothstep(0.5, 0.0, abs(UV.y - 0.5)), 0.0);
 	}
 	
 
