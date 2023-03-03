@@ -130,7 +130,7 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 	switch(event.keysym.sym) {
 		case SDLK_ESCAPE: exit(0); break; // ESC key, kill the app
 		case SDLK_0: option = 0; my_customtime = time; break;
-		case SDLK_1: option = 1; my_customtime = time; break;
+		case SDLK_1: option = (option+1)%3; my_customtime = time; break;
 		case SDLK_2: option = 2; my_customtime = time; break;
 	}
 }
