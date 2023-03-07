@@ -5,10 +5,13 @@
 #include "entity.h"
 
 Mesh* quad;
+Shader* general;
 Shader* shader;
+Shader* shader_transform;
 float my_customtime;
 Shader* shader_texture;
 Texture* fruits;
+Texture* street;
 
 Application::Application(const char* caption, int width, int height)
 {
@@ -68,9 +71,12 @@ void Application::Init(void)
 	quad->CreateQuad();
 	shader = Shader::Get("shaders/quad.vs", "shaders/quad.fs");
 	shader_texture = Shader::Get("shaders/quad.vs", "shaders/quad_texture.fs");
+	shader_transform = Shader::Get("shaders/quad.vs", "shaders/quad_transform.fs");
 	my_customtime = 0;
 	fruits = new Texture;
 	fruits->Load("images/fruits.png");
+	street = new Texture;
+	street->Load("images/street.png");
 }
 
 // Render one frame
@@ -97,6 +103,17 @@ void Application::Render(void)
 		quad->Render();
 		shader_texture->Disable();
 	}
+	if (exercice == 3) {
+		shader_transform->Enable();
+
+		shader_transform->SetUniform1("option", option);
+		shader_transform->SetTexture("street", street);
+		shader_transform->SetFloat("u_time2", time - my_customtime);
+		shader_transform->SetFloat("u_timeinf", time);
+
+		quad->Render();
+		shader_transform->Disable();
+	}
 	
 }
 
@@ -115,6 +132,7 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 		case SDLK_0: exercice = 0; option = 0; break;
 		case SDLK_1: exercice = 1; option = (option + 1) % 5; my_customtime = time; break;
 		case SDLK_2: exercice = 2; option = (option + 1) % 3; my_customtime = time; break;
+		case SDLK_3: exercice = 3; option = (option + 1) % 3; my_customtime = time; break;
 	}
 }
 
