@@ -90,6 +90,7 @@ void Application::Render(void)
 		shader_texture->Enable();
 
 		shader_texture->SetUniform1("option", option);
+		shader_texture->SetTexture("fruits", fruits);
 		shader_texture->SetFloat("u_time2", time - my_customtime);
 		shader_texture->SetFloat("u_timeinf", time);
 
@@ -113,7 +114,7 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 		case SDLK_ESCAPE: exit(0); break; // ESC key, kill the app
 		case SDLK_0: exercice = 0; option = 0; break;
 		case SDLK_1: exercice = 1; option = (option + 1) % 5; my_customtime = time; break;
-		case SDLK_2: exercice = 2; option = (option + 1) % 4; my_customtime = time; break;
+		case SDLK_2: exercice = 2; option = (option + 1) % 3; my_customtime = time; break;
 	}
 }
 
