@@ -32,11 +32,24 @@ void main()
 		final_res = image;
 	}
 	else if (option == 3) {
-
+		float i_x = image.x;
+		float i_y = image.y;
+		float i_z = image.z;
+		image.x = 1.0 - i_z;
+		image.y = i_x;
+		image.z = i_y/2;
+		final_res = image;
 	}
-
 	else if (option == 4) {
-	
+		float total = (image.x+image.y+image.z)/3;
+		image.x = floor(total+0.6);
+		image.y = floor(total+0.6);
+		image.z = floor(total+0.6);
+		final_res = image;
+	}
+	else if (option == 5) {
+
+		final_res = image;
 	}
 	
 
