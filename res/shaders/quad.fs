@@ -55,18 +55,25 @@ void main()
 		vec3 y_lines = mix(color_black, color_green, floor(y*15)/15);
 
 		final_color = x_lines + y_lines;
-
-
 	}
 
 	else if (option == 4) {
+		vec3 color_black = vec3(0);
+		vec3 color_green_black = vec3(0.0, y, 0.0);
+		vec3 color_black_green = vec3(0.0, (1-y), 0.0);
 		
-		//float dist_top = distance(v_uv, vec2(0.5, 1.0));
-		//float dist_bottom = distance(v_uv, vec2(0.5, 0.0));
-		//float max_dist = distance(vec2(0.0, 0.5), vec2(0.5, 1.0));
-		//float factor = dist_top / max_dist;
+		float factor_trans = mod(u_time2,4);
+		float factor = step(0.5+0.25*sin(factor_trans*x*2*3.1416), y);
+		final_color =  mix(color_green_black,color_black_green, factor);
+	}
+	else if (option == 5) {
+		vec3 color_black = vec3(0);
+		vec3 color_white = vec3(1.0);
 
-		//final_color = mix(black, green, factor);
+		float sum = floor(x*30) + floor(y*30);
+		float even = step(1, mod(sum, 2));
+		
+		final_color = mix(color_white, color_black, even);
 	}
 	
 
