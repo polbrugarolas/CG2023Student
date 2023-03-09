@@ -156,13 +156,6 @@ void Application::OnMouseButtonUp( SDL_MouseButtonEvent event )
 
 void Application::OnMouseMove(SDL_MouseButtonEvent event)
 {
-	if (dragging && option == 3) {
-		int x, y;
-		SDL_GetMouseState(&x, &y);
-		float t = (float)x / (float)window_width;
-		entity2->matrix_e = Matrix44();
-		entity2->matrix_e.Translate(-1.0 + 2.0 * t, 0, 0);
-	}
 	
 }
 
