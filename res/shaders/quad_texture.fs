@@ -51,6 +51,14 @@ void main()
 
 		final_res = image;
 	}
+	else if (option == 6) {
+		vec3 color_white = vec3(1.0);
+		vec3 color_black = vec3(0);
+		float dist = distance(v_uv, vec2(0.5));
+		vec3 final_color = mix(color_black, color_white, 1.5*dist);
+		image.rgb = image.rgb - final_color;
+		final_res = image;
+	}
 	
 
 	gl_FragColor = final_res;
