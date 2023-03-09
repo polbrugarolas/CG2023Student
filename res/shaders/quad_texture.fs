@@ -48,6 +48,7 @@ void main()
 		final_res = image;
 	}
 	else if (option == 5) {
+		vec4 image = (texture2D(fruits,v_uv+vec2(-0.005))+texture2D(fruits,v_uv+vec2(0.005))+texture2D(fruits,v_uv+vec2(-0.005,0))+texture2D(fruits,v_uv+vec2(0,-0.005))+texture2D(fruits,v_uv+vec2(0.005,0))+texture2D(fruits,v_uv+vec2(0,0.005)))/6;
 
 		final_res = image;
 	}
