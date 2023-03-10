@@ -31,7 +31,8 @@ void main()
 	}
 	else if (option == 2) {
 		
-		 float pixel_size = 0.025 + 0.01 * sin(u_timeinf * 0.5);
+		float pixel_size = 0.0001 + abs(0.03 * sin(u_time2 * 0.1+1.7));
+        //float pixel_size = 0.1/(u_time2*10+1);
         
         vec2 rounded_uv = vec2(floor(v_uv.x / pixel_size) * pixel_size, floor(v_uv.y / pixel_size) * pixel_size);
      
@@ -43,10 +44,9 @@ void main()
                 num_pixels++;
             }
         }
-       pixelated_color /= float(num_pixels);
+        pixelated_color /= float(num_pixels);
         
-       final_res = pixelated_color;
-	
+        final_res = pixelated_color;
 	}
 
 	gl_FragColor = final_res;
