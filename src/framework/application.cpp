@@ -8,10 +8,12 @@ Mesh* quad;
 Shader* general;
 Shader* shader;
 Shader* shader_transform;
+Shader* shader_entity;
 float my_customtime;
 Shader* shader_texture;
 Texture* fruits;
 Texture* street;
+Texture* entity_texture;
 
 Application::Application(const char* caption, int width, int height)
 {
@@ -72,11 +74,15 @@ void Application::Init(void)
 	shader = Shader::Get("shaders/quad.vs", "shaders/quad.fs");
 	shader_texture = Shader::Get("shaders/quad.vs", "shaders/quad_texture.fs");
 	shader_transform = Shader::Get("shaders/quad.vs", "shaders/quad_transform.fs");
+	shader_entity = Shader::Get("shaders/simple.vs", "shaders/simple.fs");
+
 	my_customtime = 0;
 	fruits = new Texture;
 	fruits->Load("images/fruits.png");
 	street = new Texture;
 	street->Load("images/street.png");
+	entity_texture = new Texture;
+	entity_texture->Load("textures/lee_color_specular.tga");
 }
 
 // Render one frame
@@ -114,7 +120,18 @@ void Application::Render(void)
 		quad->Render();
 		shader_transform->Disable();
 	}
-	
+	if (exercice == 4) {
+		shader_entity->Enable();
+
+		shader_entity->SetMatrix44("u_model", entity1->matrix_e);
+		shader_entity->SetMatrix44("u_viewprojection", cam->viewprojection_matrix);
+		shader_entity->SetTexture("entity_texture", entity_texture);
+
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LEQUAL);
+		entity1->Render();
+		shader_entity->Disable();
+	}
 }
 
 // Called after render
@@ -133,6 +150,7 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 		case SDLK_1: exercice = 1; option = (option + 1) % 6; my_customtime = time; break;
 		case SDLK_2: exercice = 2; option = (option + 1) % 7; my_customtime = time; break;
 		case SDLK_3: exercice = 3; option = (option + 1) % 3; my_customtime = time; break;
+		case SDLK_4: exercice = 4; break;
 	}
 }
 

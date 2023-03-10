@@ -18,6 +18,10 @@ Entity::Entity(Matrix44 mtx, Mesh* msh) {
 	this->mesh_e = *msh;
 }
 
+void Entity::Render() {
+	this->mesh_e.Render();
+}
+
 //FUNCTIONS
 void Entity::Render(Image* framebuffer, Camera* camera, const Color& c) {
 	const std::vector<Vector3>& vertices = mesh_e.GetVertices();
