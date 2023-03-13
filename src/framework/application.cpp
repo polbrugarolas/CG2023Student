@@ -60,7 +60,7 @@ void Application::Init(void)
 	entity2->matrix_e.Translate(0.5, 0, 0);
 
 	cam = new Camera();
-	cam->eye.Set(0, 0, 2);
+	cam->eye.Set(1, 0, 1);
 	cam->center.Set(0, 0, 0);
 	cam->up.Set(0, 1, 0);
 	cam->LookAt(cam->eye, cam->center, cam->up);
@@ -137,7 +137,8 @@ void Application::Render(void)
 // Called after render
 void Application::Update(float seconds_elapsed)
 {
-
+	cam->eye.Set(1.5*sin(time / 2), 0.5, 1.5*cos(time / 2)); 
+	cam->LookAt(cam->eye, cam->center, cam->up);
 }
 
 //keyboard press event 
