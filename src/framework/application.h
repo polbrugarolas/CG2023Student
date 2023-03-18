@@ -3,11 +3,14 @@
 */
 
 #pragma once
+#pragma once
 
 #include "main/includes.h"
 #include "framework.h"
 #include "image.h"
 #include "mesh.h"
+#include "material.h"
+#include "entity.h"
 
 class Application
 {
@@ -20,6 +23,8 @@ public:
 	Entity* entity2;
 	Camera* cam;
 
+	sUniformData* data;
+	Material* material;
 	// Window
 
 	SDL_Window* window = nullptr;

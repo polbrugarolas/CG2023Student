@@ -3,6 +3,7 @@
 #include "shader.h"
 #include "utils.h" 
 #include "entity.h"
+#include "material.h"
 
 Mesh* quad;
 Shader* general;
@@ -14,6 +15,8 @@ Shader* shader_texture;
 Texture* fruits;
 Texture* street;
 Texture* entity_texture;
+Material* material;
+sUniformData* data;
 
 Application::Application(const char* caption, int width, int height)
 {
@@ -83,60 +86,44 @@ void Application::Init(void)
 	street->Load("images/street.png");
 	entity_texture = new Texture;
 	entity_texture->Load("textures/lee_color_specular.tga");
+
+	data = new sUniformData();
+	
+	Vector3 ambientL = (0,0,0);
+
+	data->ambient_light = ambientL;
+	data->light.color_diffuse = Vector3(1, 1, 1);
+	data->light.color_specular = Vector3(1, 1, 1);
+	data->light.position = Vector3(1, 1, 1);
+	data->u_model = entity1->matrix_e;
+	data->u_viewprojection = cam->GetViewProjectionMatrix();
+	data->texture = entity_texture;
+	
+	material = new Material;
+	material->ka = Vector3(1, 1, 1);
+	material->kd = Vector3(1, 1, 1);
+	material->ks = Vector3(1, 1, 1);
+	material->shader = shader;
+	entity1->material = *material;
+	
+
 }
 
 // Render one frame
 void Application::Render(void)
 {
-	if(exercice == 1){
-		shader->Enable();
 	
-		shader->SetUniform1("option", option);
-		shader->SetFloat("u_time2", time - my_customtime);
-		shader->SetFloat("u_timeinf", time);
+	if (exercice == 0) {
+		
+		entity1->Render(data);
+
+	}
 	
-		quad->Render();
-		shader->Disable();
-	}
-	if(exercice == 2){
-		shader_texture->Enable();
-
-		shader_texture->SetUniform1("option", option);
-		shader_texture->SetTexture("fruits", fruits);
-		shader_texture->SetFloat("u_time2", time - my_customtime);
-		shader_texture->SetFloat("u_timeinf", time);
-
-		quad->Render();
-		shader_texture->Disable();
-	}
-	if (exercice == 3) {
-		shader_transform->Enable();
-
-		shader_transform->SetUniform1("option", option);
-		shader_transform->SetTexture("street", street);
-		shader_transform->SetFloat("u_time2", time - my_customtime);
-		shader_transform->SetFloat("u_timeinf", time);
-
-		quad->Render();
-		shader_transform->Disable();
-	}
-	if (exercice == 4) {
-		shader_entity->Enable();
-
-		shader_entity->SetMatrix44("u_model", entity1->matrix_e);
-		shader_entity->SetMatrix44("u_viewprojection", cam->viewprojection_matrix);
-		shader_entity->SetTexture("entity_texture", entity_texture);
-
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LEQUAL);
-		entity1->Render();
-		shader_entity->Disable();
-	}
 }
 
 // Called after render
 void Application::Update(float seconds_elapsed)
-{
+{	
 	cam->eye.Set(1.5*sin(time / 2), 0.5, 1.5*cos(time / 2)); 
 	cam->LookAt(cam->eye, cam->center, cam->up);
 }
@@ -148,10 +135,6 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 	switch(event.keysym.sym) {
 		case SDLK_ESCAPE: exit(0); break; // ESC key, kill the app
 		case SDLK_0: exercice = 0; option = 0; break;
-		case SDLK_1: exercice = 1; option = (option + 1) % 6; my_customtime = time; break;
-		case SDLK_2: exercice = 2; option = (option + 1) % 7; my_customtime = time; break;
-		case SDLK_3: exercice = 3; option = (option + 1) % 3; my_customtime = time; break;
-		case SDLK_4: exercice = 4; break;
 	}
 }
 

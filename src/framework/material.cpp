@@ -20,4 +20,28 @@ Material::Material(Shader* shader, Vector3 ka, Vector3 kd, Vector3 ks, float alp
 	this->alpha = alpha;
 	this->difuse_specular = difuse_specular;
 	this->normal = normal;
+
+}
+
+
+
+void Material::Enable(const sUniformData& uniformData)
+{
+
+	shader->Enable();
+	
+	shader->SetUniform3("ka", ka);
+	shader->SetUniform3("kd", kd);
+	shader->SetUniform3("ks", ks);
+	shader->SetUniform1("alpha", alpha);
+	shader->SetTexture("diffuse_specular", difuse_specular);
+	shader->SetTexture("normal", normal);
+
+}
+
+void Material::Disable()
+{
+
+	shader->Disable();
+
 }

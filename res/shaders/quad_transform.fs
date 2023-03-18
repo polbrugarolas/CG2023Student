@@ -32,7 +32,6 @@ void main()
 	else if (option == 2) {
 		
 		float pixel_size = 0.0001 + abs(0.03 * sin(u_time2 * 0.1+1.7));
-        //float pixel_size = 0.1/(u_time2*10+1);
         
         vec2 rounded_uv = vec2(floor(v_uv.x / pixel_size) * pixel_size, floor(v_uv.y / pixel_size) * pixel_size);
      

@@ -3,6 +3,7 @@
 #include "main/includes.h"
 #include <iostream>
 
+
 //CONSTRUCTORS
 
 Entity::Entity() { this->matrix_e = Matrix44(); }
@@ -20,6 +21,12 @@ Entity::Entity(Matrix44 mtx, Mesh* msh) {
 
 void Entity::Render() {
 	this->mesh_e.Render();
+}
+
+void Entity::Render(sUniformData* uniformData) {
+	material.Enable(*uniformData);
+	material.Disable();
+
 }
 
 //FUNCTIONS
